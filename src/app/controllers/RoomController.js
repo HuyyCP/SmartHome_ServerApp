@@ -17,11 +17,13 @@ class RoomController {
     // [GET] rooms/:id
     // get room by ObjectID
     async roomByID(req, res, next) {
-        Room.findOne({ _id: req.params.id })
+        Room.findById(req.params.id)
+            .populate('ESPs')
             .then((room) => {
-                res.json(room);
-            })
-            .catch(next);
+                if (room) {
+                    res.json(room);
+                }
+            }).catch(next);
     }
 
 }

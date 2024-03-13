@@ -1,8 +1,9 @@
 const mongoose = require('mongoose');
+require('dotenv').config()
 
 async function connect() {
     try {
-        await mongoose.connect('mongodb://127.0.0.1:27017/SmartHome');
+        await mongoose.connect(process.env.URL_DB);
 
         console.log('Connect successfully!!!');
     } catch (error) {
