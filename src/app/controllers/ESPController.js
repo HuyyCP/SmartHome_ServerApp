@@ -11,9 +11,9 @@ class ESPController {
     //     res.json(req.body);
     // }
 
-    // [GET] /esp/connect/:id?numDevices=
+    // [GET] /esp/connect/:idESP?numDevices=
     connect(req, res, next) {
-        ESP.findOne({ _idESP: req.params.id })
+        ESP.findOne({ _idESP: req.params.idESP })
             .then((esp) => {
                 if (esp) {
                     console.log('existed in db');
@@ -31,13 +31,16 @@ class ESPController {
     }
 
 
-    // [POST] /:id
+    // [POST] /:idESP
+    // Change status of devices
     async post(req, res, next) {
+        console.log("req.body: ", req.body);
+        // console.log('idESP: ', req.params.idESP);
         const devicesNewStatus = req.body.devices;
         try {
             await Promise.all(devicesNewStatus.map(async (device) => {
                 const foundDevice = await ESP.findOne({
-                    _idESP: req.params.id,
+                    _idESP: req.params.idESP,
                     devices: {
                         $elemMatch: {
                             _id: device.id
@@ -49,7 +52,7 @@ class ESPController {
                 }
 
                 await ESP.updateOne({
-                    _idESP: req.params.id,
+                    _idESP: req.params.idESP,
                     devices: {
                         $elemMatch: {
                             _id: device.id
@@ -68,14 +71,14 @@ class ESPController {
         } catch (error) {
             console.error(error);
             res.status(406).json({
-                'text': 'Failure'
+                'text': error.message.toString()
             });
         }
     }
 
-    // [POST] /:id
+    // [POST] /:idESP
     async get(req, res, next) {
-        ESP.findOne({ _idESP: req.params.id })
+        ESP.findOne({ _idESP: req.params.idESP })
             .then((esp) => {
                 if (esp) {
                     console.log('existed in db');
@@ -103,9 +106,11 @@ class ESPController {
     }
     // [POST] /:id
     async getAllESPs(req, res, next) {
-        ESP.find({}).then((esps) => {
-            res.json(esps)
-        }).catch(next)
+        await ESP.find({})
+            .then((esps) => {
+                res.json(esps);
+            })
+            .catch(next);
     }
 }
 

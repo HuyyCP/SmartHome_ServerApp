@@ -6,9 +6,9 @@ const espController = require('../app/controllers/ESPController');
 // /connect/:id?numPort=
 router.get('/all', espController.getAllESPs);
 
-router.get('/connect/:id', espController.connect);
-router.post('/:id', espController.post);
-router.get('/:id', espController.get);
+router.get('/connect/:idESP', espController.connect);
+router.post('/:idESP', espController.post);
+router.get('/:idESP', espController.get);
 
 
 
